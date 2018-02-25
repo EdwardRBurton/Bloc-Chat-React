@@ -1,22 +1,30 @@
 import React, { Component } from 'react';
 
-export class RoomList extends Component {
+class RoomList extends Component {
+
   constructor(props){
     super(props);
+      this.state = {rooms: []};
       this.roomsRef = this.props.firebase.database().ref("rooms");
   }
 
   componentDidMount() {
      this.roomsRef.on('child_added', snapshot => {
-       this.setState({ rooms: this.state.rooms.concat( snapshot.val() ) });
+       const room = snapshot.val();
+       room.key = snapshot.key;
+       this.setState({ rooms: this.state.rooms.concat( room ) })
      });
+  }
 
-  render() {
-    const roomList = this.stat.rooms.map(room);
+  render(){
+    const roomList = this.state.rooms.map((room) =>
+      <li key={room.key}>{room.name}</li>
+    );
     return (
-      this.state ={
-        rooms: []
-      };
+      <ul>
+        {roomList}
+      </ul>
     );
   }
 }
+export default RoomList;
